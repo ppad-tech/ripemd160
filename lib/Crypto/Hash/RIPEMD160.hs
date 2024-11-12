@@ -2,12 +2,28 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE ViewPatterns #-}
 
--- see
+-- |
+-- Module: Crypto.Hash.RIPEMD160
+-- Copyright: (c) 2024 Jared Tobin
+-- License: MIT
+-- Maintainer: Jared Tobin <jared@ppad.tech>
+--
+-- Pure RIPEMD-160 and HMAC-RIPEMD160 implementations for
+-- strict and lazy ByteStrings.
+
+-- for spec, see
 --
 -- https://homes.esat.kuleuven.be/~bosselae/ripemd160/pdf/AB-9601/AB-9601.pdf
 
+module Crypto.Hash.RIPEMD160 (
+  -- * RIPEMD-160 message digest functions
+    hash
+  , hash_lazy
 
-module Crypto.Hash.RIPEMD160 where
+  -- * RIPEMD160-based MAC functions
+  , hmac
+  , hmac_lazy
+  ) where
 
 import qualified Data.Bits as B
 import Data.Bits ((.|.), (.&.))
