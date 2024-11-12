@@ -414,70 +414,68 @@ hash_lazy bl = cat (go iv (pad_lazy bl)) where
     | otherwise = case splitAt64 bs of
         SLPair c r -> go (unsafe_hash_alg acc c) r
 
--- -- HMAC -----------------------------------------------------------------------
--- -- https://datatracker.ietf.org/doc/html/rfc2104#section-2
+-- HMAC -----------------------------------------------------------------------
+-- https://datatracker.ietf.org/doc/html/rfc2104#section-2
+
+data KeyAndLen = KeyAndLen
+  {-# UNPACK #-} !BS.ByteString
+  {-# UNPACK #-} !Int
+
+-- | Produce a message authentication code for a strict bytestring,
+--   based on the provided (strict, bytestring) key, via RIPEMD-160.
 --
--- data KeyAndLen = KeyAndLen
---   {-# UNPACK #-} !BS.ByteString
---   {-# UNPACK #-} !Int
+--   The 160-bit MAC is returned as a strict bytestring.
 --
--- -- | Produce a message authentication code for a strict bytestring,
--- --   based on the provided (strict, bytestring) key, via RIPEMD-160.
--- --
--- --   The 160-bit MAC is returned as a strict bytestring.
--- --
--- --   Per RFC 2104, the key /should/ be a minimum of 32 bytes long. Keys
--- --   exceeding 64 bytes in length will first be hashed (via RIPEMD-160).
--- --
--- --   >>> hmac "strict bytestring key" "strict bytestring input"
--- --   "<strict 160-bit MAC>"
--- hmac
---   :: BS.ByteString -- ^ key
---   -> BS.ByteString -- ^ text
---   -> BS.ByteString
--- hmac mk text =
---     let step1 = k <> BS.replicate (64 - lk) 0x00
---         step2 = BS.map (B.xor 0x36) step1
---         step3 = step2 <> text
---         step4 = hash step3
---         step5 = BS.map (B.xor 0x5C) step1
---         step6 = step5 <> step4
---     in  hash step6
---   where
---     !(KeyAndLen k lk) =
---       let l = BS.length mk
---       in  if   l > 64
---           then KeyAndLen (hash mk) 32
---           else KeyAndLen mk l
+--   Per RFC 2104, the key /should/ be a minimum of 32 bytes long. Keys
+--   exceeding 64 bytes in length will first be hashed (via RIPEMD-160).
 --
--- -- | Produce a message authentication code for a lazy bytestring, based
--- --   on the provided (strict, bytestring) key, via RIPEMD-160.
--- --
--- --   The 160-bit MAC is returned as a strict bytestring.
--- --
--- --   Per RFC 2104, the key /should/ be a minimum of 32 bytes long. Keys
--- --   exceeding 64 bytes in length will first be hashed (via RIPEMD-160).
--- --
--- --   >>> hmac_lazy "strict bytestring key" "lazy bytestring input"
--- --   "<strict 160-bit MAC>"
--- hmac_lazy
---   :: BS.ByteString -- ^ key
---   -> BL.ByteString -- ^ text
---   -> BS.ByteString
--- hmac_lazy mk text =
---     let step1 = k <> BS.replicate (64 - lk) 0x00
---         step2 = BS.map (B.xor 0x36) step1
---         step3 = BL.fromStrict step2 <> text
---         step4 = hash_lazy step3
---         step5 = BS.map (B.xor 0x5C) step1
---         step6 = step5 <> step4
---     in  hash step6
---   where
---     !(KeyAndLen k lk) =
---       let l = BS.length mk
---       in  if   l > 64
---           then KeyAndLen (hash mk) 32
---           else KeyAndLen mk l
+--   >>> hmac "strict bytestring key" "strict bytestring input"
+--   "<strict 160-bit MAC>"
+hmac
+  :: BS.ByteString -- ^ key
+  -> BS.ByteString -- ^ text
+  -> BS.ByteString
+hmac mk text =
+    let step1 = k <> BS.replicate (64 - lk) 0x00
+        step2 = BS.map (B.xor 0x36) step1
+        step3 = step2 <> text
+        step4 = hash step3
+        step5 = BS.map (B.xor 0x5C) step1
+        step6 = step5 <> step4
+    in  hash step6
+  where
+    !(KeyAndLen k lk) =
+      let l = BS.length mk
+      in  if   l > 64
+          then KeyAndLen (hash mk) 32
+          else KeyAndLen mk l
+
+-- | Produce a message authentication code for a lazy bytestring, based
+--   on the provided (strict, bytestring) key, via RIPEMD-160.
 --
+--   The 160-bit MAC is returned as a strict bytestring.
 --
+--   Per RFC 2104, the key /should/ be a minimum of 32 bytes long. Keys
+--   exceeding 64 bytes in length will first be hashed (via RIPEMD-160).
 --
+--   >>> hmac_lazy "strict bytestring key" "lazy bytestring input"
+--   "<strict 160-bit MAC>"
+hmac_lazy
+  :: BS.ByteString -- ^ key
+  -> BL.ByteString -- ^ text
+  -> BS.ByteString
+hmac_lazy mk text =
+    let step1 = k <> BS.replicate (64 - lk) 0x00
+        step2 = BS.map (B.xor 0x36) step1
+        step3 = BL.fromStrict step2 <> text
+        step4 = hash_lazy step3
+        step5 = BS.map (B.xor 0x5C) step1
+        step6 = step5 <> step4
+    in  hash step6
+  where
+    !(KeyAndLen k lk) =
+      let l = BS.length mk
+      in  if   l > 64
+          then KeyAndLen (hash mk) 32
+          else KeyAndLen mk l
+
