@@ -21,8 +21,6 @@ import qualified Data.ByteString.Unsafe as BU
 import Data.Word (Word32, Word64)
 import Foreign.ForeignPtr (plusForeignPtr)
 
-import Debug.Trace
-
 -- preliminary utils
 
 -- keystroke saver
@@ -30,18 +28,18 @@ fi :: (Integral a, Num b) => a -> b
 fi = fromIntegral
 {-# INLINE fi #-}
 
--- parse strict ByteString in BE order to Word32 (verbatim from
+-- parse strict ByteString in LE order to Word32 (verbatim from
 -- Data.Binary)
 --
 -- invariant:
 --   the input bytestring is at least 32 bits in length
-unsafe_word32be :: BS.ByteString -> Word32
-unsafe_word32be s =
-  (fi (s `BU.unsafeIndex` 0) `B.unsafeShiftL` 24) .|.
-  (fi (s `BU.unsafeIndex` 1) `B.unsafeShiftL` 16) .|.
-  (fi (s `BU.unsafeIndex` 2) `B.unsafeShiftL`  8) .|.
-  (fi (s `BU.unsafeIndex` 3))
-{-# INLINE unsafe_word32be #-}
+unsafe_word32le :: BS.ByteString -> Word32
+unsafe_word32le s =
+  (fi (s `BU.unsafeIndex` 3) `B.unsafeShiftL` 24) .|.
+  (fi (s `BU.unsafeIndex` 2) `B.unsafeShiftL` 16) .|.
+  (fi (s `BU.unsafeIndex` 1) `B.unsafeShiftL`  8) .|.
+  (fi (s `BU.unsafeIndex` 0))
+{-# INLINE unsafe_word32le #-}
 
 -- utility types for more efficient ByteString management
 
@@ -83,7 +81,7 @@ splitAt64 = splitAt' (64 :: Int) where
 --   the input bytestring is at least 32 bits in length
 unsafe_parseWsPair :: BS.ByteString -> WSPair
 unsafe_parseWsPair (BI.BS x l) =
-  WSPair (unsafe_word32be (BI.BS x 4)) (BI.BS (plusForeignPtr x 4) (l - 4))
+  WSPair (unsafe_word32le (BI.BS x 4)) (BI.BS (plusForeignPtr x 4) (l - 4))
 {-# INLINE unsafe_parseWsPair #-}
 
 -- message padding and parsing
