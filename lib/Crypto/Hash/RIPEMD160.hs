@@ -194,10 +194,15 @@ unsafe_parse bs =
 -- nonlinear functions at bit level
 f0, f1, f2, f3, f4 :: Word32 -> Word32 -> Word32 -> Word32
 f0 x y z = x `B.xor` y `B.xor` z
+{-# INLINE f0 #-}
 f1 x y z = (x .&. y) .|. ((B.complement x) .&. z)
+{-# INLINE f1 #-}
 f2 x y z = (x .|. B.complement y) `B.xor` z
+{-# INLINE f2 #-}
 f3 x y z = (x .&. z) .|. (y .&. B.complement z)
+{-# INLINE f3 #-}
 f4 x y z = x `B.xor` (y .|. B.complement z)
+{-# INLINE f4 #-}
 
 -- constants
 k0, k1, k2, k3, k4 :: Word32
