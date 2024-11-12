@@ -442,7 +442,7 @@ data KeyAndLen = KeyAndLen
 --
 --   The 160-bit MAC is returned as a strict bytestring.
 --
---   Per RFC 2104, the key /should/ be a minimum of 32 bytes long. Keys
+--   Per RFC 2104, the key /should/ be a minimum of 20 bytes long. Keys
 --   exceeding 64 bytes in length will first be hashed (via RIPEMD-160).
 --
 --   >>> hmac "strict bytestring key" "strict bytestring input"
@@ -463,7 +463,7 @@ hmac mk text =
     !(KeyAndLen k lk) =
       let l = BS.length mk
       in  if   l > 64
-          then KeyAndLen (hash mk) 32
+          then KeyAndLen (hash mk) 20
           else KeyAndLen mk l
 
 -- | Produce a message authentication code for a lazy bytestring, based
@@ -471,7 +471,7 @@ hmac mk text =
 --
 --   The 160-bit MAC is returned as a strict bytestring.
 --
---   Per RFC 2104, the key /should/ be a minimum of 32 bytes long. Keys
+--   Per RFC 2104, the key /should/ be a minimum of 20 bytes long. Keys
 --   exceeding 64 bytes in length will first be hashed (via RIPEMD-160).
 --
 --   >>> hmac_lazy "strict bytestring key" "lazy bytestring input"
@@ -492,6 +492,6 @@ hmac_lazy mk text =
     !(KeyAndLen k lk) =
       let l = BS.length mk
       in  if   l > 64
-          then KeyAndLen (hash mk) 32
+          then KeyAndLen (hash mk) 20
           else KeyAndLen mk l
 
