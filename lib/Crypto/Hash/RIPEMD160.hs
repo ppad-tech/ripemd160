@@ -195,7 +195,7 @@ unsafe_parse bs =
 f0, f1, f2, f3, f4 :: Word32 -> Word32 -> Word32 -> Word32
 f0 x y z = x `B.xor` y `B.xor` z
 {-# INLINE f0 #-}
-f1 x y z = (x .&. y) .|. ((B.complement x) .&. z)
+f1 x y z = (x .&. y) .|. (B.complement x .&. z)
 {-# INLINE f1 #-}
 f2 x y z = (x .|. B.complement y) `B.xor` z
 {-# INLINE f2 #-}
@@ -227,37 +227,37 @@ round1, round2, round3, round4, round5 ::
   Word32 -> Word32 -> Registers -> Registers -> Int -> Int -> Pair
 
 round1 x x' (Registers a b c d e) (Registers a' b' c' d' e') s s' =
-  let t  = (B.rotateL (a + f0 b c d + x + k0) s) + e
+  let t  = B.rotateL (a + f0 b c d + x + k0) s + e
       r0 = Registers e t b (B.rotateL c 10) d
-      t' = (B.rotateL (a' + f4 b' c' d' + x' + k0') s') + e'
+      t' = B.rotateL (a' + f4 b' c' d' + x' + k0') s' + e'
       r1 = Registers e' t' b' (B.rotateL c' 10) d'
   in  Pair r0 r1
 
 round2 x x' (Registers a b c d e) (Registers a' b' c' d' e') s s' =
-  let t  = (B.rotateL (a + f1 b c d + x + k1) s) + e
+  let t  = B.rotateL (a + f1 b c d + x + k1) s + e
       r0 = Registers e t b (B.rotateL c 10) d
-      t' = (B.rotateL (a' + f3 b' c' d' + x' + k1') s') + e'
+      t' = B.rotateL (a' + f3 b' c' d' + x' + k1') s' + e'
       r1 = Registers e' t' b' (B.rotateL c' 10) d'
   in  Pair r0 r1
 
 round3 x x' (Registers a b c d e) (Registers a' b' c' d' e') s s' =
-  let t  = (B.rotateL (a + f2 b c d + x + k2) s) + e
+  let t  = B.rotateL (a + f2 b c d + x + k2) s + e
       r0 = Registers e t b (B.rotateL c 10) d
-      t' = (B.rotateL (a' + f2 b' c' d' + x' + k2') s') + e'
+      t' = B.rotateL (a' + f2 b' c' d' + x' + k2') s' + e'
       r1 = Registers e' t' b' (B.rotateL c' 10) d'
   in  Pair r0 r1
 
 round4 x x' (Registers a b c d e) (Registers a' b' c' d' e') s s' =
-  let t  = (B.rotateL (a + f3 b c d + x + k3) s) + e
+  let t  = B.rotateL (a + f3 b c d + x + k3) s + e
       r0 = Registers e t b (B.rotateL c 10) d
-      t' = (B.rotateL (a' + f1 b' c' d' + x' + k3') s') + e'
+      t' = B.rotateL (a' + f1 b' c' d' + x' + k3') s' + e'
       r1 = Registers e' t' b' (B.rotateL c' 10) d'
   in  Pair r0 r1
 
 round5 x x' (Registers a b c d e) (Registers a' b' c' d' e') s s' =
-  let t  = (B.rotateL (a + f4 b c d + x + k4) s) + e
+  let t  = B.rotateL (a + f4 b c d + x + k4) s + e
       r0 = Registers e t b (B.rotateL c 10) d
-      t' = (B.rotateL (a' + f0 b' c' d' + x' + k4') s') + e'
+      t' = B.rotateL (a' + f0 b' c' d' + x' + k4') s' + e'
       r1 = Registers e' t' b' (B.rotateL c' 10) d'
   in  Pair r0 r1
 
