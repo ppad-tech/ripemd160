@@ -80,14 +80,14 @@ unsafe_splitAt n (BI.BS x l) =
 splitAt64 :: BL.ByteString -> SLPair
 splitAt64 = splitAt' (64 :: Int) where
   splitAt' _ BLI.Empty        = SLPair mempty BLI.Empty
-  splitAt' n (BLI.Chunk c cs) =
-    if    n < BS.length c
+  splitAt' n (BLI.Chunk c@(BI.PS _ _ l) cs) =
+    if    n < l
     then
       -- n < BS.length c, so unsafe_splitAt is safe
       let !(SSPair c0 c1) = unsafe_splitAt n c
       in  SLPair c0 (BLI.Chunk c1 cs)
     else
-      let SLPair cs' cs'' = splitAt' (n - BS.length c) cs
+      let SLPair cs' cs'' = splitAt' (n - l) cs
       in  SLPair (c <> cs') cs''
 
 -- variant of Data.ByteString.splitAt that behaves like an incremental
@@ -117,10 +117,8 @@ sol l =
   in  fi (if r < 0 then r + 64 else r)
 
 pad :: BS.ByteString -> BS.ByteString
-pad m = BL.toStrict . BSB.toLazyByteString $ padded where
-  l = fi (BS.length m)
+pad m@(BI.PS _ _ (fi -> l)) = BL.toStrict . BSB.toLazyByteString $ padded where
   padded = BSB.byteString m <> fill (sol l) (BSB.word8 0x80)
-
   fill j !acc
     | j == 0 = acc <> BSB.word64LE (l * 8)
     | otherwise = fill (pred j) (acc <> BSB.word8 0x00)
@@ -456,7 +454,7 @@ hmac
   :: BS.ByteString -- ^ key
   -> BS.ByteString -- ^ text
   -> BS.ByteString
-hmac mk text =
+hmac mk@(BI.PS _ _ l) text =
     let step1 = k <> BS.replicate (64 - lk) 0x00
         step2 = BS.map (B.xor 0x36) step1
         step3 = step2 <> text
@@ -465,11 +463,9 @@ hmac mk text =
         step6 = step5 <> step4
     in  hash step6
   where
-    !(KeyAndLen k lk) =
-      let l = BS.length mk
-      in  if   l > 64
-          then KeyAndLen (hash mk) 20
-          else KeyAndLen mk l
+    !(KeyAndLen k lk)
+      | l > 64    = KeyAndLen (hash mk) 20
+      | otherwise = KeyAndLen mk l
 
 -- | Produce a message authentication code for a lazy bytestring, based
 --   on the provided (strict, bytestring) key, via RIPEMD-160.
@@ -485,7 +481,7 @@ hmac_lazy
   :: BS.ByteString -- ^ key
   -> BL.ByteString -- ^ text
   -> BS.ByteString
-hmac_lazy mk text =
+hmac_lazy mk@(BI.PS _ _ l) text =
     let step1 = k <> BS.replicate (64 - lk) 0x00
         step2 = BS.map (B.xor 0x36) step1
         step3 = BL.fromStrict step2 <> text
@@ -494,9 +490,7 @@ hmac_lazy mk text =
         step6 = step5 <> step4
     in  hash step6
   where
-    !(KeyAndLen k lk) =
-      let l = BS.length mk
-      in  if   l > 64
-          then KeyAndLen (hash mk) 20
-          else KeyAndLen mk l
+    !(KeyAndLen k lk)
+      | l > 64    = KeyAndLen (hash mk) 20
+      | otherwise = KeyAndLen mk l
 
