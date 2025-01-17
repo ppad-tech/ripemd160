@@ -34,7 +34,7 @@ A sample GHCi session:
   "\154\248\145[\196\ETX\f\ESC\NULs"
   >
   > -- you can use third-party libraries for rendering if needed
-  > -- e.g., using base16-bytestring:
+  > -- e.g., using ppad-base16:
   >
   > import qualified Data.ByteString.Base16 as B16
   >
