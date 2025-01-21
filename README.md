@@ -59,32 +59,18 @@ Current benchmark figures on my mid-2020 MacBook Air look like (use
 
 ```
   benchmarking ppad-ripemd160/RIPEMD160 (32B input)/hash
-  time                 1.115 μs   (1.109 μs .. 1.122 μs)
-                       1.000 R²   (1.000 R² .. 1.000 R²)
-  mean                 1.123 μs   (1.117 μs .. 1.130 μs)
-  std dev              19.84 ns   (16.75 ns .. 23.55 ns)
-  variance introduced by outliers: 19% (moderately inflated)
-
-  benchmarking ppad-ripemd160/RIPEMD160 (32B input)/hash_lazy
-  time                 1.072 μs   (1.060 μs .. 1.085 μs)
+  time                 786.6 ns   (778.0 ns .. 796.7 ns)
                        0.999 R²   (0.999 R² .. 1.000 R²)
-  mean                 1.073 μs   (1.066 μs .. 1.082 μs)
-  std dev              27.29 ns   (23.35 ns .. 31.28 ns)
-  variance introduced by outliers: 33% (moderately inflated)
+  mean                 778.6 ns   (775.3 ns .. 784.2 ns)
+  std dev              13.85 ns   (9.858 ns .. 22.05 ns)
+  variance introduced by outliers: 20% (moderately inflated)
 
   benchmarking ppad-ripemd160/HMAC-RIPEMD160 (32B input)/hmac
-  time                 3.941 μs   (3.919 μs .. 3.963 μs)
-                       1.000 R²   (0.999 R² .. 1.000 R²)
-  mean                 3.997 μs   (3.972 μs .. 4.037 μs)
-  std dev              111.0 ns   (71.80 ns .. 191.1 ns)
-  variance introduced by outliers: 34% (moderately inflated)
-
-  benchmarking ppad-ripemd160/HMAC-RIPEMD160 (32B input)/hmac_lazy
-  time                 3.944 μs   (3.912 μs .. 3.991 μs)
-                       0.999 R²   (0.999 R² .. 1.000 R²)
-  mean                 3.982 μs   (3.955 μs .. 4.012 μs)
-  std dev              96.66 ns   (83.81 ns .. 117.3 ns)
-  variance introduced by outliers: 28% (moderately inflated)
+  time                 2.933 μs   (2.906 μs .. 2.974 μs)
+                       0.999 R²   (0.999 R² .. 0.999 R²)
+  mean                 3.002 μs   (2.978 μs .. 3.022 μs)
+  std dev              74.97 ns   (62.74 ns .. 89.91 ns)
+  variance introduced by outliers: 30% (moderately inflated)
 ```
 
 ## Security
