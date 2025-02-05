@@ -100,6 +100,15 @@ unsafe_parseWsPair (BI.BS x l) =
   WSPair (unsafe_word32le (BI.BS x 4)) (BI.BS (plusForeignPtr x 4) (l - 4))
 {-# INLINE unsafe_parseWsPair #-}
 
+-- builder realization strategies
+
+to_strict :: BSB.Builder -> BS.ByteString
+to_strict = BL.toStrict . BSB.toLazyByteString
+
+to_strict_small :: BSB.Builder -> BS.ByteString
+to_strict_small = BL.toStrict . BE.toLazyByteStringWith
+  (BE.safeStrategy 128 BE.smallChunkSize) mempty
+
 -- message padding and parsing
 
 -- this is the standard padding for merkle-damgård constructions; see e.g.
@@ -117,9 +126,9 @@ sol l =
   in  fi (if r < 0 then r + 64 else r)
 
 pad :: BS.ByteString -> BS.ByteString
-pad m@(BI.PS _ _ (fi -> l)) =
-    BL.toStrict . BE.toLazyByteStringWith
-      (BE.safeStrategy 128 BE.smallChunkSize) mempty $ padded
+pad m@(BI.PS _ _ (fi -> l))
+    | l < 128   = to_strict_small padded
+    | otherwise = to_strict padded
   where
     padded = BSB.byteString m
           <> fill (sol l) (BSB.word8 0x80)
@@ -202,10 +211,7 @@ pad_lazy (BL.toChunks -> m) = BL.fromChunks (walk 0 m) where
   padding l k bs
     | k == 0 =
           pure
-        . BL.toStrict
-          -- more efficient for small builder
-        . BE.toLazyByteStringWith
-            (BE.safeStrategy 128 BE.smallChunkSize) mempty
+        . to_strict
         $ bs <> BSB.word64LE (l * 8)
     | otherwise =
         let nacc = bs <> BSB.word8 0x00
@@ -462,16 +468,12 @@ unsafe_hash_alg rs bs = block_hash rs (unsafe_parse bs)
 -- register concatenation
 cat :: Registers -> BS.ByteString
 cat Registers {..} =
-    BL.toStrict
-    -- more efficient for small builder
-  . BE.toLazyByteStringWith (BE.safeStrategy 128 BE.smallChunkSize) mempty
-  $ mconcat [
-        BSB.word32LE h0
-      , BSB.word32LE h1
-      , BSB.word32LE h2
-      , BSB.word32LE h3
-      , BSB.word32LE h4
-      ]
+  let w64_0 = fi h1 `B.shiftL` 32 .|. fi h0
+      w64_1 = fi h3 `B.shiftL` 32 .|. fi h2
+  in  to_strict_small $
+           BSB.word64LE w64_0
+        <> BSB.word64LE w64_1
+        <> BSB.word32LE h4
 
 -- | Compute a condensed representation of a strict bytestring via
 --   RIPEMD-160.
