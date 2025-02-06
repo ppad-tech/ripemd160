@@ -1,6 +1,10 @@
 # Changelog
 
-- 0.1.2 (2025-10-21)
+- 0.1.3 (2025-02-06)
+  * Makes a minor optimization to register concatenation (swapping five
+    builders for 3) and also refines builder realization by input size.
+
+- 0.1.2 (2025-01-21)
   * Improves padding handling for the strict bytestring case, yielding
     performance increases for both 'hash' and 'hmac'.
 
