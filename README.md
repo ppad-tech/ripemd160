@@ -1,4 +1,4 @@
-# ppad-ripemd160
+# ripemd160
 
 [![](https://img.shields.io/hackage/v/ppad-ripemd160?color=blue)](https://hackage.haskell.org/package/ppad-ripemd160)
 ![](https://img.shields.io/badge/license-MIT-brightgreen)
