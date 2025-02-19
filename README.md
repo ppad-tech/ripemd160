@@ -1,10 +1,10 @@
 # ppad-ripemd160
 
-A pure Haskell implementation of [RIPEMD-160][ripem] and HMAC-RIPEMD160
-on strict and lazy ByteStrings.
-
 [![](https://img.shields.io/hackage/v/ppad-ripemd160?color=blue)](https://hackage.haskell.org/package/ppad-ripemd160)
 ![](https://img.shields.io/badge/license-MIT-brightgreen)
+
+A pure Haskell implementation of [RIPEMD-160][ripem] and HMAC-RIPEMD160
+on strict and lazy ByteStrings.
 
 ## Usage
 
