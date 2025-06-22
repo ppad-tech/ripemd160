@@ -121,8 +121,13 @@ cmp_hmac_lazy msg key (BL.fromStrict -> put) pec = testCase msg $ do
   let out = B16.encode (RIPEMD160.hmac_lazy key put)
   assertEqual mempty pec out
 
+decodeLenient :: BS.ByteString -> BS.ByteString
+decodeLenient bs = case B16.decode bs of
+  Nothing -> error "bang"
+  Just b -> b
+
 hmv1_key :: BS.ByteString
-hmv1_key = B16.decodeLenient "0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b"
+hmv1_key = decodeLenient "0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b"
 
 hmv1_put :: BS.ByteString
 hmv1_put = "Hi There"
@@ -140,25 +145,25 @@ hmv2_pec :: BS.ByteString
 hmv2_pec = "dda6c0213a485a9e24f4742064a7f033b43c4069"
 
 hmv3_key :: BS.ByteString
-hmv3_key = B16.decodeLenient "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+hmv3_key = decodeLenient "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
 hmv3_put :: BS.ByteString
-hmv3_put = B16.decodeLenient "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+hmv3_put = decodeLenient "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
 
 hmv3_pec :: BS.ByteString
 hmv3_pec = "b0b105360de759960ab4f35298e116e295d8e7c1"
 
 hmv4_key :: BS.ByteString
-hmv4_key = B16.decodeLenient "0102030405060708090a0b0c0d0e0f10111213141516171819"
+hmv4_key = decodeLenient "0102030405060708090a0b0c0d0e0f10111213141516171819"
 
 hmv4_put :: BS.ByteString
-hmv4_put = B16.decodeLenient "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd"
+hmv4_put = decodeLenient "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd"
 
 hmv4_pec :: BS.ByteString
 hmv4_pec = "d5ca862f4d21d5e610e18b4cf1beb97a4365ecf4"
 
 hmv5_key :: BS.ByteString
-hmv5_key = B16.decodeLenient "0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c"
+hmv5_key = decodeLenient "0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c"
 
 hmv5_put :: BS.ByteString
 hmv5_put = "Test With Truncation"
@@ -167,7 +172,7 @@ hmv5_pec :: BS.ByteString
 hmv5_pec = "7619693978f91d90539ae786500ff3d8e0518e39"
 
 hmv6_key :: BS.ByteString
-hmv6_key = B16.decodeLenient "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+hmv6_key = decodeLenient "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
 hmv6_put :: BS.ByteString
 hmv6_put = "Test Using Larger Than Block-Size Key - Hash Key First"

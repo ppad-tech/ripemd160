@@ -41,8 +41,8 @@ test-suite ripemd160-tests
   build-depends:
       aeson
     , base
-    , base16-bytestring
     , bytestring
+    , ppad-base16
     , ppad-ripemd160
     , tasty
     , tasty-hunit
