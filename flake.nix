@@ -25,6 +25,7 @@
 
         pkgs = import nixpkgs { inherit system; };
         hlib = pkgs.haskell.lib;
+        llvm = pkgs.llvmPackages_15.llvm;
 
         base16 = ppad-base16.packages.${system}.default;
 
@@ -50,9 +51,8 @@
             buildInputs = [
               cabal
               cc
+              llvm
             ];
-
-            inputsFrom = builtins.attrValues self.packages.${system};
 
             doBenchmark = true;
 

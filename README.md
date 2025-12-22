@@ -58,24 +58,24 @@ Haddocks (API documentation, etc.) are hosted at
 The aim is best-in-class performance for pure, highly-auditable Haskell
 code.
 
-Current benchmark figures on my mid-2020 MacBook Air look like (use
+Current benchmark figures on my M4 Silicon MacBook Air look like (use
 `cabal bench` to run the benchmark suite):
 
 ```
   benchmarking ppad-ripemd160/RIPEMD160 (32B input)/hash
-  time                 786.6 ns   (778.0 ns .. 796.7 ns)
-                       0.999 R²   (0.999 R² .. 1.000 R²)
-  mean                 778.6 ns   (775.3 ns .. 784.2 ns)
-  std dev              13.85 ns   (9.858 ns .. 22.05 ns)
-  variance introduced by outliers: 20% (moderately inflated)
+  time                 244.2 ns   (244.0 ns .. 244.4 ns)
+                       1.000 R²   (1.000 R² .. 1.000 R²)
+  mean                 244.5 ns   (244.4 ns .. 244.7 ns)
+  std dev              522.8 ps   (355.8 ps .. 868.0 ps)
 
   benchmarking ppad-ripemd160/HMAC-RIPEMD160 (32B input)/hmac
-  time                 2.933 μs   (2.906 μs .. 2.974 μs)
-                       0.999 R²   (0.999 R² .. 0.999 R²)
-  mean                 3.002 μs   (2.978 μs .. 3.022 μs)
-  std dev              74.97 ns   (62.74 ns .. 89.91 ns)
-  variance introduced by outliers: 30% (moderately inflated)
+  time                 836.1 ns   (835.3 ns .. 837.0 ns)
+                       1.000 R²   (1.000 R² .. 1.000 R²)
+  mean                 836.6 ns   (835.6 ns .. 837.4 ns)
+  std dev              3.105 ns   (2.474 ns .. 4.117 ns)
 ```
+
+Compile with the 'llvm' flag for maximum performance.
 
 ## Security
 
