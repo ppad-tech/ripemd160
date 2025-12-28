@@ -63,16 +63,17 @@ Current benchmark figures on my M4 Silicon MacBook Air look like (use
 
 ```
   benchmarking ppad-ripemd160/RIPEMD160 (32B input)/hash
-  time                 244.2 ns   (244.0 ns .. 244.4 ns)
+  time                 179.1 ns   (178.9 ns .. 179.3 ns)
                        1.000 R²   (1.000 R² .. 1.000 R²)
-  mean                 244.5 ns   (244.4 ns .. 244.7 ns)
-  std dev              522.8 ps   (355.8 ps .. 868.0 ps)
+  mean                 179.7 ns   (179.5 ns .. 179.9 ns)
+  std dev              715.4 ps   (538.9 ps .. 988.3 ps)
 
   benchmarking ppad-ripemd160/HMAC-RIPEMD160 (32B input)/hmac
-  time                 836.1 ns   (835.3 ns .. 837.0 ns)
+  time                 661.4 ns   (660.0 ns .. 663.3 ns)
                        1.000 R²   (1.000 R² .. 1.000 R²)
-  mean                 836.6 ns   (835.6 ns .. 837.4 ns)
-  std dev              3.105 ns   (2.474 ns .. 4.117 ns)
+  mean                 667.3 ns   (664.7 ns .. 669.9 ns)
+  std dev              8.607 ns   (7.495 ns .. 9.627 ns)
+  variance introduced by outliers: 12% (moderately inflated)
 ```
 
 Compile with the 'llvm' flag for maximum performance.

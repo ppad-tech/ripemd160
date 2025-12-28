@@ -25,12 +25,17 @@
 
         pkgs = import nixpkgs { inherit system; };
         hlib = pkgs.haskell.lib;
-        llvm = pkgs.llvmPackages_15.llvm;
+        llvm = pkgs.llvmPackages_19.llvm;
 
         base16 = ppad-base16.packages.${system}.default;
+        base16-llvm =
+          hlib.addBuildTools
+            (hlib.enableCabalFlag base16 "llvm")
+            [ llvm ];
 
-        hpkgs = pkgs.haskell.packages.ghc981.extend (new: old: {
-          ppad-base16 = base16;
+
+        hpkgs = pkgs.haskell.packages.ghc910.extend (new: old: {
+          ppad-base16 = base16-llvm;
           ${lib} = old.callCabal2nixWithOptions lib ./. "--enable-profiling" {
             ppad-base16 = new.ppad-base16;
           };
@@ -62,6 +67,7 @@
               echo "cc:    $(${cc}/bin/cc --version)"
               echo "ghc:   $(${ghc}/bin/ghc --version)"
               echo "cabal: $(${cabal}/bin/cabal --version)"
+              echo "llc:   $(${llvm}/bin/llc --version | head -2 | tail -1)"
             '';
           };
         }
